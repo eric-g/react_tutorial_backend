@@ -1,14 +1,19 @@
-const express = require('express')
-const cors = require('cors')
-const app = express()
+// const express = require('express')
+// const cors = require('cors')
 
-app.use(express.json()); // for parsing application/json
-app.use(cors()); // for enabling CORS
-app.use(express.static('dist'))
-app.use((request, response, next) => {
-  response.header('Access-Control-Allow-Origin', '*');
-  next();
-});
+import express, { Router } from "express";
+import serverless from "serverless-http";
+import cors from "cors";
+const app = Router();
+const api = express()
+
+api.use(express.json()); // for parsing application/json
+api.use(cors()); // for enabling CORS
+api.use(express.static('dist'))
+// api.use((request, response, next) => {
+//   response.header('Access-Control-Allow-Origin', '*');
+//   next();
+// });
 
 let notes = [
   {
@@ -87,7 +92,9 @@ app.put('/api/notes/:id', (request, response) => {
   response.json(notes[itemIndex]);
 })
 
-const PORT = 3002
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-})
+// const PORT = 3002
+// app.listen(PORT, () => {
+//   console.log(`Server running on port ${PORT}`)
+// })
+
+export const handler = serverless(api);
