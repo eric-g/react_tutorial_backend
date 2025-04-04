@@ -4,8 +4,9 @@
 import express, { Router } from "express";
 import serverless from "serverless-http";
 import cors from "cors";
-const app = Router();
+
 const api = express()
+const app = Router();
 
 api.use(express.json()); // for parsing application/json
 api.use(cors()); // for enabling CORS
