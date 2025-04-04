@@ -4,6 +4,7 @@
 import express, { Router } from "express";
 import serverless from "serverless-http";
 import cors from "cors";
+const bodyParser = require('body-parser');
 
 const api = express()
 const app = Router();
@@ -34,9 +35,6 @@ let notes = [
   }
 ]
 
-app.get('/', (request, response) => {
-  response.send('<h1>Hello World!</h1>')
-})
 
 app.get('/notes', (request, response) => {
   response.json(notes)
@@ -51,6 +49,8 @@ const generateId = () => {
 
 app.post('/notes', (request, response) => {
   const body = request.body
+
+  console.log(request, body)
 
   if (!body.content) {
     return response.status(400).json({ 
