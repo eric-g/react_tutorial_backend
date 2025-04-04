@@ -48,9 +48,9 @@ const generateId = () => {
 }
 
 app.post('/notes', (request, response) => {
-  const body =request.apiGateway.event.body;
+  const body =JSON.parse(request.apiGateway.event.body);
 
-  console.log(request, body)
+  console.log(body)
 
   if (!body.content) {
     return response.status(400).json({ 
