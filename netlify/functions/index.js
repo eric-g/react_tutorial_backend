@@ -19,7 +19,7 @@ api.use(express.static('dist'))
 let notes = [
   {
     id: "1",
-    content: "HTML is easy!",
+    content: "HTML is hard!",
     important: true
   },
   {
@@ -80,7 +80,7 @@ app.get('/notes/:id', (request, response) => {
 app.delete('/notes/:id', (request, response) => {
   const id = request.params.id
   len = notes.length
-  console.log("Notes length: " ,len)
+  console.log("Notes length netlify: " ,len)
   notes = notes.filter(note => note.id !== id)
   if (len === notes.length) {
     return response.status(400).send({ error: 'Note not found' })
