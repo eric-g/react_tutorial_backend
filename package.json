@@ -4,6 +4,7 @@
   "description": "backend to introdemo notes app",
   "main": "index.js",
   "scripts": {
+    "build:ui": "rm -rf dist && cd ../introdemo/ && npm run build && cp -r dist ../introdemo_backend",
     "start": "node index.js",
     "dev": "node --watch index.js",
     "test": "echo \\\"Error: no test specified\\\" && exit 1"

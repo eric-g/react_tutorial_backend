@@ -4,7 +4,6 @@
 import express, { Router } from "express";
 import serverless from "serverless-http";
 import cors from "cors";
-const bodyParser = require('body-parser');
 
 const api = express()
 const app = Router();
@@ -84,7 +83,7 @@ app.delete('/notes/:id', (request, response) => {
   console.log("Notes length: " ,len)
   notes = notes.filter(note => note.id !== id)
   if (len === notes.length) {
-    return response.status(404).send({ error: 'Note not found' })
+    return response.status(400).send({ error: 'Note not found' })
   }
 
   response.status(204).end()
