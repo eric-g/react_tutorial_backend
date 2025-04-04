@@ -4,6 +4,7 @@ const app = express()
 
 app.use(express.json()); // for parsing application/json
 app.use(cors()); // for enabling CORS
+app.use(express.static('dist'))
 app.use((request, response, next) => {
   response.header('Access-Control-Allow-Origin', '*');
   next();
