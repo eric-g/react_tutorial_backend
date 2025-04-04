@@ -1,7 +1,9 @@
 const express = require('express')
+const cors = require('cors')
 const app = express()
 
 app.use(express.json()); // for parsing application/json
+app.use(cors()); // for enabling CORS
 app.use((request, response, next) => {
   response.header('Access-Control-Allow-Origin', '*');
   next();
@@ -74,6 +76,14 @@ app.delete('/api/notes/:id', (request, response) => {
   notes = notes.filter(note => note.id !== id)
 
   response.status(204).end()
+})
+
+app.put('/api/notes/:id', (request, response) => {
+  const id = request.params.id
+  const itemIndex = notes.findIndex((item) => item.id === id);
+  notes[itemIndex] = request.body;
+
+  response.json(notes[itemIndex]);
 })
 
 const PORT = 3002
