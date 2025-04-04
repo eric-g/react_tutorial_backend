@@ -49,7 +49,7 @@ const generateId = () => {
   return String(maxId + 1)
 }
 
-app.post('/api/notes', (request, response) => {
+app.post('/notes', (request, response) => {
   const body = request.body
 
   if (!body.content) {
@@ -69,7 +69,7 @@ app.post('/api/notes', (request, response) => {
   response.json(note)
 })
 
-app.get('/api/notes/:id', (request, response) => {
+app.get('/notes/:id', (request, response) => {
   const id = request.params.id
   const note = notes.find(note => note.id === id)
   if (!note) {
@@ -78,14 +78,14 @@ app.get('/api/notes/:id', (request, response) => {
   response.json(note)
 })
 
-app.delete('/api/notes/:id', (request, response) => {
+app.delete('/notes/:id', (request, response) => {
   const id = request.params.id
   notes = notes.filter(note => note.id !== id)
 
   response.status(204).end()
 })
 
-app.put('/api/notes/:id', (request, response) => {
+app.put('/notes/:id', (request, response) => {
   const id = request.params.id
   const itemIndex = notes.findIndex((item) => item.id === id);
   notes[itemIndex] = request.body;
