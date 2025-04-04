@@ -48,7 +48,7 @@ const generateId = () => {
 }
 
 app.post('/notes', (request, response) => {
-  const body =JSON.parse(request.apiGateway.event.body);
+  const body = JSON.parse(request.apiGateway.event.body);
 
   console.log(body)
 
@@ -88,7 +88,7 @@ app.delete('/notes/:id', (request, response) => {
 app.put('/notes/:id', (request, response) => {
   const id = request.params.id
   const itemIndex = notes.findIndex((item) => item.id === id);
-  notes[itemIndex] = request.body;
+  notes[itemIndex] = JSON.parse(request.apiGateway.event.body);
 
   response.json(notes[itemIndex]);
 })
