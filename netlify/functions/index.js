@@ -97,5 +97,5 @@ app.put('/api/notes/:id', (request, response) => {
 // app.listen(PORT, () => {
 //   console.log(`Server running on port ${PORT}`)
 // })
-api.use("/api/", router);
+api.use("/api/", app);
 export const handler = serverless(api);
