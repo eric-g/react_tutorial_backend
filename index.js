@@ -74,7 +74,12 @@ app.get('/api/notes/:id', (request, response) => {
 
 app.delete('/api/notes/:id', (request, response) => {
   const id = request.params.id
+  const len = notes.length
+  console.log("Notes length: " ,len)
   notes = notes.filter(note => note.id !== id)
+  if (len === notes.length) {
+    return response.status(400).send({ error: 'Note not found' })
+  }
 
   response.status(204).end()
 })

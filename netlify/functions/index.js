@@ -80,7 +80,12 @@ app.get('/notes/:id', (request, response) => {
 
 app.delete('/notes/:id', (request, response) => {
   const id = request.params.id
+  len = notes.length
+  console.log("Notes length: " ,len)
   notes = notes.filter(note => note.id !== id)
+  if (len === notes.length) {
+    return response.status(404).send({ error: 'Note not found' })
+  }
 
   response.status(204).end()
 })
