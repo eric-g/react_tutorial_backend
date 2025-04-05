@@ -1,39 +1,47 @@
 const express = require('express')
 const cors = require('cors')
+const mongoose = require('mongoose')
 const app = express()
 
 app.use(express.json()); // for parsing application/json
 app.use(cors()); // for enabling CORS
 app.use(express.static('dist'))
-// app.use((request, response, next) => {
-//   response.header('Access-Control-Allow-Origin', '*');
-//   next();
-// });
 
-let notes = [
-  {
-    id: "1",
-    content: "HTML is simple!",
-    important: true
-  },
-  {
-    id: "2",
-    content: "Browser can execute only JavaScript",
-    important: false
-  },
-  {
-    id: "3",
-    content: "GET and POST are the most important methods of HTTP protocol",
-    important: true
-  }
-]
+const password = process.argv[2]
+const url = `mongodb+srv://Egaus:${password}@gaus-cluster.435ysu8.mongodb.net/noteApp?retryWrites=true&w=majority&appName=gaus-cluster`
 
-app.get('/', (request, response) => {
-  response.send('<h1>Hello World!</h1>')
+mongoose.set('strictQuery',false)
+mongoose.connect(url)
+
+const noteSchema = new mongoose.Schema({
+  content: String,
+  important: Boolean,
 })
 
+const Note = mongoose.model('Note', noteSchema)
+
+// let notes = [
+//   {
+//     id: "1",
+//     content: "HTML is simple!",
+//     important: true
+//   },
+//   {
+//     id: "2",
+//     content: "Browser can execute only JavaScript",
+//     important: false
+//   },
+//   {
+//     id: "3",
+//     content: "GET and POST are the most important methods of HTTP protocol",
+//     important: true
+//   }
+// ]
+
 app.get('/api/notes', (request, response) => {
-  response.json(notes)
+  Note.find({}).then(notes => {
+    response.json(notes)
+  })
 })
 
 const generateId = () => {
