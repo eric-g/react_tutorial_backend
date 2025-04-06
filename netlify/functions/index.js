@@ -7,7 +7,7 @@ const api = express()
 const app = Router();
 
 api.use(express.json()); // for parsing application/json
-api.use(cors()); // for enabling CORS
+//api.use(cors()); // for enabling CORS
 api.use(express.static('dist'))
 
 app.get('/notes', (request, response) => {
@@ -38,13 +38,17 @@ app.post('/notes', (request, response) => {
 })
 
 app.get('/notes/:id', (request, response) => {
-  Note.findById(request.params.id).then(note => {
+  Note.findById(request.params.id)
+  .then(note => {
     if (!note) {
       return response.status(404).send({ error: 'Note not found' })
     }
     response.json(note)
   })
-
+  .catch(error => {
+    console.log(error)
+    response.status(400).send({ error: 'invalid id' })
+  })
 })
 
 app.delete('/notes/:id', (request, response, next) => {

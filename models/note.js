@@ -4,9 +4,7 @@ dotenv.config()
 
 mongoose.set('strictQuery', false)
 
-//const password = process.argv[3]
 const url = process.env.MONGODB_URI
-//const url = `mongodb+srv://Egaus:${password}@gaus-cluster.435ysu8.mongodb.net/noteApp?retryWrites=true&w=majority&appName=gaus-cluster`
 
 console.log('connecting to MongoDB...')
 mongoose.connect(url)
