@@ -1,14 +1,24 @@
 import express, { Router } from "express";
 import serverless from "serverless-http";
 import Note from "../../models/note.js";
-import cors from "cors";
 
 const api = express()
 const app = Router();
 
 api.use(express.json()); // for parsing application/json
-//api.use(cors()); // for enabling CORS
 api.use(express.static('dist'))
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).send({ error: error.message })
+  }
+
+  next(error)
+}
 
 app.get('/notes', (request, response) => {
   Note.find({}).then(notes => {
@@ -16,25 +26,20 @@ app.get('/notes', (request, response) => {
   })
 })
 
-app.post('/notes', (request, response) => {
+app.post('/notes', (request, response, next) => {
   const body = JSON.parse(request.apiGateway.event.body);
-
-  if (!body.content) {
-    return response.status(400).json({ 
-      error: 'content missing' 
-    })
-  }
 
   const note = new Note({
     content: body.content,
     important: body.important || false,
   })
 
-  note.save().then(result => {
+  note.save().then(savedNote => {
     console.log('note saved!')
+    response.json(savedNote)
   })
+  .catch(error => next(error))
 
-  response.json(note)
 })
 
 app.get('/notes/:id', (request, response) => {
@@ -77,6 +82,13 @@ app.put('/notes/:id', (request, response, next) => {
     })
     .catch((error) => next(error))
 })
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
+app.use(errorHandler)
 
 api.use("/api/", app);
 export const handler = serverless(api);
