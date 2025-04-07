@@ -1,57 +1,18 @@
-const express = require('express')
-const cors = require('cors')
-const mongoose = require('mongoose')
+import express from 'express'
+import Note from './models/note_node.js'
 const app = express()
 
 app.use(express.json()); // for parsing application/json
-app.use(cors()); // for enabling CORS
 app.use(express.static('dist'))
 
-const password = process.argv[2]
-const url = `mongodb+srv://Egaus:${password}@gaus-cluster.435ysu8.mongodb.net/noteApp?retryWrites=true&w=majority&appName=gaus-cluster`
-
-mongoose.set('strictQuery',false)
-mongoose.connect(url)
-
-const noteSchema = new mongoose.Schema({
-  content: String,
-  important: Boolean,
-})
-
-const Note = mongoose.model('Note', noteSchema)
-
-// let notes = [
-//   {
-//     id: "1",
-//     content: "HTML is simple!",
-//     important: true
-//   },
-//   {
-//     id: "2",
-//     content: "Browser can execute only JavaScript",
-//     important: false
-//   },
-//   {
-//     id: "3",
-//     content: "GET and POST are the most important methods of HTTP protocol",
-//     important: true
-//   }
-// ]
-
 app.get('/api/notes', (request, response) => {
+  console.log('Fetching notes from MongoDB...')
   Note.find({}).then(notes => {
     response.json(notes)
   })
 })
 
-const generateId = () => {
-  const maxId = notes.length > 0
-    ? Math.max(...notes.map(n => Number(n.id)))
-    : 0
-  return String(maxId + 1)
-}
-
-app.post('/api/notes', (request, response) => {
+app.post('/api/notes', (request, response, next) => {
   const body = request.body
 
   if (!body.content) {
@@ -60,15 +21,16 @@ app.post('/api/notes', (request, response) => {
     })
   }
 
-  const note = {
-    id: generateId(),
+  const note = new Note({ 
     content: body.content,
     important: body.important || false,
-  }
+  })
 
-  notes = notes.concat(note)
-
-  response.json(note)
+  note.save().then(savedNote => {
+    console.log('note saved!')
+    response.json(savedNote)
+  })
+  .catch(error => next(error))
 })
 
 app.get('/api/notes/:id', (request, response) => {
@@ -80,16 +42,12 @@ app.get('/api/notes/:id', (request, response) => {
   response.json(note)
 })
 
-app.delete('/api/notes/:id', (request, response) => {
-  const id = request.params.id
-  const len = notes.length
-  console.log("Notes length: " ,len)
-  notes = notes.filter(note => note.id !== id)
-  if (len === notes.length) {
-    return response.status(400).send({ error: 'Note not found' })
-  }
-
-  response.status(204).end()
+app.delete('/api/notes/:id', (request, response, next) => {
+  Note.findByIdAndDelete(request.params.id)
+  .then((result) => {
+    response.status(204).end()
+  })
+  .catch((error) => next(error))
 })
 
 app.put('/api/notes/:id', (request, response) => {
