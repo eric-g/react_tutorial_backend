@@ -1,6 +1,7 @@
 import express, { Router } from "express";
 import serverless from "serverless-http";
 import Note from "../../models/note.js";
+import {errorHandler, unknownEndpoint} from '../../utils/middleware_netlify.js'
 
 const api = express()
 const app = Router();
@@ -8,22 +9,9 @@ const app = Router();
 api.use(express.json()); // for parsing application/json
 api.use(express.static('dist'))
 
-const errorHandler = (error, request, response, next) => {
-  console.error(error.message)
-
-  if (error.name === 'CastError') {
-    return response.status(400).send({ error: 'malformatted id' })
-  } else if (error.name === 'ValidationError') {
-    return response.status(400).send({ error: error.message })
-  }
-
-  next(error)
-}
-
-app.get('/notes', (request, response) => {
-  Note.find({}).then(notes => {
-    response.json(notes)
-  })
+app.get('/notes', async (request, response) => {
+  const notes = await Note.find({})
+  response.json(notes)
 })
 
 app.post('/notes', (request, response, next) => {
@@ -82,10 +70,6 @@ app.put('/notes/:id', (request, response, next) => {
     })
     .catch((error) => next(error))
 })
-
-const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: 'unknown endpoint' })
-}
 
 app.use(unknownEndpoint)
 app.use(errorHandler)
