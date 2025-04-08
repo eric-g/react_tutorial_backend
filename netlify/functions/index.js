@@ -24,7 +24,7 @@ app.post('/notes', (request, response, next) => {
 
   note.save().then(savedNote => {
     console.log('note saved!')
-    response.json(savedNote)
+    response.status(201).json(savedNote)
   })
   .catch(error => next(error))
 

@@ -36,6 +36,33 @@ test('a note is about CSS difficulty', async () => {
   assert(contents.includes('CSS is hard'), 'Expected content not found')
 })
 
+test('a note can be posted and deleted', async () => {
+  const newNote = {
+    content: 'Automated test note',
+    important: true,
+  }
+
+  let newItemId;
+
+  try {
+    const response = await api
+    .post('/api/notes')
+    .set('Content-Type', 'application/json')
+    .send(newNote)
+    .expect(201);
+
+    assert(response.body.content === newNote.content, 'Content mismatch')
+    newItemId = response.body.id;
+  } finally {
+    if (newItemId) {
+      await api
+        .delete(`/api/notes/${newItemId}`)
+        .expect(204)
+    }
+  }
+  
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
