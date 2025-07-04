@@ -1,13 +1,30 @@
 import express, { Router } from "express";
 import serverless from "serverless-http";
 import Note from "../../models/note.js";
+import mongoose from "mongoose";
+import logger from "../../utils/logger.js";
 import {errorHandler, unknownEndpoint} from '../../utils/middleware_netlify.js'
 
 const api = express()
 const app = Router();
-
+const MONGODB_URI = process.env.MONGODB_URI
 api.use(express.json()); // for parsing application/json
 api.use(express.static('dist'))
+
+mongoose.set('strictQuery', false)
+
+if (mongoose.connection.readyState === 0) {
+  logger.info('connecting to MongoDB ...')
+  mongoose.connect(MONGODB_URI)
+    .then(() => {
+      logger.info('connected to MongoDB on Netlify!')
+    })
+    .catch((error) => {
+      logger.error('error connection to MongoDB:', error.message)
+    })
+} else {
+    logger.info('MongoDB connection already established.')
+  }
 
 app.get('/notes', async (request, response) => {
   const notes = await Note.find({})

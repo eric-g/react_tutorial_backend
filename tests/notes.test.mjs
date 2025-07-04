@@ -26,7 +26,6 @@ test('there is one note at /id', async () => {
 
   assert(response.body.id === id, 'ID mismatch found')
   assert(response.body.important === isImportant, 'Important mismatch found')
-
 })
 
 test('a note is about CSS difficulty', async () => {
@@ -58,11 +57,20 @@ test('a note can be posted and deleted', async () => {
       await api
         .delete(`/api/notes/${newItemId}`)
         .expect(204)
+
+      await api
+        .get(`/api/notes/${newItemId}`)
+        .expect(404)
     }
   }
-  
 })
 
+test('invalid id results in 400 error', async () => {
+  await api
+    .get('/api/notes/123')
+    .expect(400, {error: 'malformatted id'})
+})
+  
 after(async () => {
   await mongoose.connection.close()
 })
