@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build:ui": "rm -rf dist && cd ../introdemo/ && npm run build && cp -r dist ../introdemo_backend",
-    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push origin main",
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push origin $(git rev-parse --abbrev-ref HEAD)",
     "start": "NODE_ENV=production node index.js",
     "dev": "NODE_ENV=development node --watch index.js",
     "test": "NODE_ENV=test node --test",
