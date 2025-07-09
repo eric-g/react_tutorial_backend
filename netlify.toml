@@ -2,7 +2,18 @@
   external_node_modules = ["express"]
   node_bundler = "esbuild"
 [build]
-  publish = "dist" 
+  publish = "dist"
+
+[[redirects]]
+  from = "/api/users"
+  to = "/.netlify/functions/users"
+  status = 200
+
+[[redirects]]
+  from = "/api/users/*"
+  to = "/.netlify/functions/users/:splat"
+  status = 200
+
 [[redirects]]
   force = true
   from = "/api/*"
