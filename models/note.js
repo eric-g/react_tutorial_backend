@@ -24,4 +24,5 @@ noteSchema.set('toJSON', {
 
 const Note = mongoose.model('Note', noteSchema)
 
-module.exports = Note;
+//module.exports = Note;
+export default Note;
