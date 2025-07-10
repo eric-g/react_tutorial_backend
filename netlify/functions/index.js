@@ -12,7 +12,6 @@ api.use(express.static('dist'))
 
 app.use(async (req, res, next) => {
   try {
-    logger.info('connecting to MongoDB ...')
     await connectToDatabase();
     logger.info('connected to MongoDB via Netlify!')
     next();

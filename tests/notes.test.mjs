@@ -3,6 +3,7 @@ import mongoose from 'mongoose'
 import supertest from 'supertest'
 import assert from 'node:assert/strict'
 import app from '../app.mjs'
+import helper from './test_helper.js'
 
 const api = supertest(app)
 
@@ -36,9 +37,11 @@ test('a note is about CSS difficulty', async () => {
 })
 
 test('a note can be posted and deleted', async () => {
+  const existingUsers = await helper.usersInDb()
   const newNote = {
     content: 'Automated test note',
     important: true,
+    userId: existingUsers[0]["id"] // Replace with a valid user ID
   }
 
   let newItemId;
