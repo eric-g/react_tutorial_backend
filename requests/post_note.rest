@@ -1,9 +1,8 @@
-POST http://localhost:3002/api/notes/ HTTP/1.1
+POST http://localhost:8888/api/notes/ HTTP/1.1
 content-type: application/json
 
 {
-    "content": "sample2",
-    "time": "Wed, 21 Oct 2015 18:27:50 GMT",
+    "content": "sample3",
     "important": true,
-    "userId": "67f5a94a027b2ec0d2f25e83"
+    "id": "686ff98967580d97ed6ca340"
 }

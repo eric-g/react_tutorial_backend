@@ -27,8 +27,8 @@ app.get('/notes', async (request, response) => {
 })
 
 app.post('/notes', (request, response, next) => {
-  const body = JSON.parse(request.apiGateway.event.body);
-
+  const body = request.body || JSON.parse(request.apiGateway.event.body);
+  logger.info("Body:", body)
   const note = new Note({
     content: body.content,
     important: body.important || false,
@@ -42,7 +42,7 @@ app.post('/notes', (request, response, next) => {
 
 })
 
-app.get('/notes/:id', (request, response) => {
+app.get('/notes/:id', (request, response, next) => {
   Note.findById(request.params.id)
   .then(note => {
     if (!note) {
@@ -50,10 +50,7 @@ app.get('/notes/:id', (request, response) => {
     }
     response.json(note)
   })
-  .catch(error => {
-    console.log(error)
-    response.status(400).send({ error: 'invalid id' })
-  })
+   .catch((error) => next(error))
 })
 
 app.delete('/notes/:id', (request, response, next) => {
@@ -88,3 +85,4 @@ app.use(errorHandler)
 
 api.use("/api/", app);
 export const handler = serverless(api);
+export default api

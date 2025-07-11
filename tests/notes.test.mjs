@@ -2,9 +2,11 @@ import { test, after } from 'node:test'
 import mongoose from 'mongoose'
 import supertest from 'supertest'
 import assert from 'node:assert/strict'
-import app from '../app.mjs'
-//import handler from '../netlify/functions/index.js'
+//import app from '../app.mjs'
+import app from '../netlify/functions/index.js'
 import helper from './test_helper.js'
+import dotenv from 'dotenv'
+dotenv.config()
 
 const api = supertest(app)
 
@@ -42,11 +44,11 @@ test('a note can be posted and deleted', async () => {
   const newNote = {
     content: 'Automated test note',
     important: true,
-    userId: existingUsers[0]["id"] // Replace with a valid user ID
+    id: existingUsers[0]["id"] // Replace with a valid user ID
   }
 
   let newItemId;
-
+  
   try {
     const response = await api
     .post('/api/notes')
